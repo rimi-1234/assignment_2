@@ -73,8 +73,6 @@ const getIssues = async (filters: {
   if (issues.length === 0) {
     return [];
   }
-
-  // Fetch reporter details without JOINs
   const reporterIds = [...new Set(issues.map((i) => i.reporter_id))].filter(Boolean);
   let reportersMap: Record<number, { id: number; name: string; role: string }> = {};
 
@@ -106,16 +104,19 @@ const getSingleIssue = async (issueId: number): Promise<IIssueResponse> => {
   if (result.rows.length === 0) {
     throw new AppError(StatusCodes.NOT_FOUND, "Issue not found");
   }
-
   const issue = result.rows[0];
   const { reporter_id, ...rest } = issue;
-
   const userResult = await pool.query("SELECT id, name, role FROM users WHERE id = $1", [reporter_id]);
   const reporter = userResult.rows[0] || null;
-
   return {
-    ...rest,
+    id: rest.id,
+    title: rest.title,
+    description: rest.description,
+    type: rest.type,
+    status: rest.status,
     reporter,
+    created_at: rest.created_at,
+    updated_at: rest.updated_at,
   } as unknown as IIssueResponse;
 };
 
