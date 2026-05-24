@@ -147,8 +147,6 @@ const updateIssue = async (
   const title = payload.title || existingIssue.title;
   const description = payload.description || existingIssue.description;
   const type = payload.type || existingIssue.type;
-
-  // Only maintainers can update the status
   const status = userRole === "maintainer" ? (payload.status || existingIssue.status) : existingIssue.status;
 
   if (title.length > 150) {
