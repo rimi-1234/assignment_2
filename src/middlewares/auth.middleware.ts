@@ -16,7 +16,7 @@ export const authVerify = (req: Request, res: Response, next: NextFunction) => {
       throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid token format");
     }
 
-    const decoded = jwt.verify(token, config.jwt_secret as string);
+    const decoded = jwt.verify(token, config.jwt_secret as string) as jwt.JwtPayload;
     req.user = decoded;
     next();
   } catch (error) {

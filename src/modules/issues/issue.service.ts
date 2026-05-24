@@ -5,6 +5,7 @@ import type {
   ICreateIssuePayload,
   IUpdateIssuePayload,
   IIssueResponse,
+  IReporterDetails,
 } from "./issue.interface.js";
 
 const createIssue = async (
@@ -73,7 +74,7 @@ const getIssues = async (filters: {
   if (issues.length === 0) {
     return [];
   }
-  const reporterIds = [...new Set(issues.map((i) => i.reporter_id))].filter(Boolean);
+  const reporterIds = [...new Set(issues.map((i: IIssueResponse) => i.reporter_id))].filter(Boolean);
   let reportersMap: Record<number, { id: number; name: string; role: string }> = {};
 
   if (reporterIds.length > 0) {
@@ -81,7 +82,7 @@ const getIssues = async (filters: {
       "SELECT id, name, role FROM users WHERE id = ANY($1)",
       [reporterIds]
     );
-    reportersRes.rows.forEach((user) => {
+    reportersRes.rows.forEach((user: IReporterDetails) => {
       reportersMap[user.id] = {
         id: user.id,
         name: user.name,
@@ -90,11 +91,11 @@ const getIssues = async (filters: {
     });
   }
 
-  return issues.map((issue) => {
+  return issues.map((issue: IIssueResponse) => {
     const { reporter_id, ...rest } = issue;
     return {
       ...rest,
-      reporter: reportersMap[reporter_id] || null,
+      reporter: reportersMap[reporter_id as number] || null,
     };
   }) as unknown as IIssueResponse[];
 };
