@@ -24,7 +24,7 @@ export const authVerify = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const requireRole = (roles: string[]) => {
+export const role = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = req.user;

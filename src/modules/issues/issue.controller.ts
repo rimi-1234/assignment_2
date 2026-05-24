@@ -5,9 +5,8 @@ import { StatusCodes } from "http-status-codes";
 
 const createIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user?.id;
     const result = await IssueService.createIssue(req.body, userId);
-
     sendResponse(res, {
       statusCode: StatusCodes.CREATED,
       success: true,
@@ -64,8 +63,8 @@ const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error("Invalid issue ID");
     }
 
-    const userId = (req as any).user.id;
-    const userRole = (req as any).user.role;
+    const userId = req.user?.id;
+    const userRole = req.user?.role;
 
     const result = await IssueService.updateIssue(issueId, req.body, userId, userRole);
 
