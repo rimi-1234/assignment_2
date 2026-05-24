@@ -1,7 +1,7 @@
 # DevPulse Issue Tracker
 
 ## 🌐 Live URL
-[https://your-deployment-url.com](https://your-deployment-url.com) *(Update this with your actual deployed URL)*
+[https://assignment-2-liard-alpha.vercel.app/](https://assignment-2-liard-alpha.vercel.app) *(Update this with your actual deployed URL)*
 
 ## 🚀 Features
 - **User Authentication:** Secure JWT-based signup and login.
@@ -22,7 +22,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/rimi-1234/assignment_2
    cd Assignment_2
    ```
 

@@ -148,7 +148,11 @@ const updateIssue = async (
   const title = payload.title || existingIssue.title;
   const description = payload.description || existingIssue.description;
   const type = payload.type || existingIssue.type;
-  const status = payload.status || existingIssue.status;
+  // Automatically change status from "open" to "in_progress" upon first update
+  let status = payload.status;
+  if (!status) {
+    status = existingIssue.status === "open" ? "in_progress" : existingIssue.status;
+  }
 
   if (title.length > 150) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Invalid title (max 150 characters)");
@@ -171,7 +175,18 @@ const updateIssue = async (
     [title, description, type, status, issueId]
   );
 
-  return result.rows[0] as IIssueResponse;
+  const updatedIssue = result.rows[0];
+  
+  return {
+    id: updatedIssue.id,
+    title: updatedIssue.title,
+    description: updatedIssue.description,
+    type: updatedIssue.type,
+    status: updatedIssue.status,
+    reporter_id: updatedIssue.reporter_id,
+    created_at: updatedIssue.created_at,
+    updated_at: updatedIssue.updated_at,
+  } as unknown as IIssueResponse;
 };
 
 const deleteIssue = async (issueId: number): Promise<void> => {
