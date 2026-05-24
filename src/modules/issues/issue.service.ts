@@ -14,15 +14,15 @@ const createIssue = async (
   const { title, description, type } = payload;
 
   if (!title || title.length > 150) {
-    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid title (max 150 characters)");
+    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid title max 150 characters");
   }
 
   if (!description || description.length < 20) {
-    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid description (min 20 characters)");
+    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid description min 20 characters");
   }
 
   if (type !== "bug" && type !== "feature_request") {
-    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid type (bug or feature_request only)");
+    throw new AppError(StatusCodes.BAD_REQUEST, "Invalid type bug or feature_request only");
   }
 
   // Validate reporter exists
@@ -46,28 +46,28 @@ const getIssues = async (filters: {
 }): Promise<IIssueResponse[]> => {
   const { sort = "newest", type, status } = filters;
 
-  let queryText = "SELECT * FROM issues";
+  let query = "SELECT * FROM issues";
   const queryParams: any[] = [];
-  const filterClauses: string[] = [];
+  const filter: string[] = [];
 
   if (type) {
     queryParams.push(type);
-    filterClauses.push(`type = $${queryParams.length}`);
+    filter.push(`type = $${queryParams.length}`);
   }
 
   if (status) {
     queryParams.push(status);
-    filterClauses.push(`status = $${queryParams.length}`);
+    filter.push(`status = $${queryParams.length}`);
   }
 
-  if (filterClauses.length > 0) {
-    queryText += " WHERE " + filterClauses.join(" AND ");
+  if (filter.length > 0) {
+    query += " WHERE " + filter.join(" AND ");
   }
 
   const sortOrder = sort === "oldest" ? "ASC" : "DESC";
-  queryText += ` ORDER BY created_at ${sortOrder}`;
+  query += ` ORDER BY created_at ${sortOrder}`;
 
-  const result = await pool.query(queryText, queryParams);
+  const result = await pool.query(query, queryParams);
   const issues = result.rows;
 
   if (issues.length === 0) {
@@ -146,7 +146,7 @@ const updateIssue = async (
   const title = payload.title || existingIssue.title;
   const description = payload.description || existingIssue.description;
   const type = payload.type || existingIssue.type;
-  
+
   // Only maintainers can update the status
   const status = userRole === "maintainer" ? (payload.status || existingIssue.status) : existingIssue.status;
 
