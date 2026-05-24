@@ -147,7 +147,7 @@ const updateIssue = async (
   const title = payload.title || existingIssue.title;
   const description = payload.description || existingIssue.description;
   const type = payload.type || existingIssue.type;
-  const status = userRole === "maintainer" ? (payload.status || existingIssue.status) : existingIssue.status;
+  const status = payload.status || existingIssue.status;
 
   if (title.length > 150) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Invalid title (max 150 characters)");
