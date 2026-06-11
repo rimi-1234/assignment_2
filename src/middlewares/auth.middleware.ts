@@ -11,7 +11,9 @@ export const authVerify = (req: Request, res: Response, next: NextFunction) => {
       throw new AppError(StatusCodes.UNAUTHORIZED, "Missing authorization header");
     }
 
-    const token = authHeader.split(" ")[1];
+    // Handle cases where the 'Bearer ' prefix might be missing
+    const token = authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
+
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, "Invalid token format");
     }
